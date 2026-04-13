@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Tokens partagés : utiliser `bg-surface`, `text-foreground`, `text-muted` dans les vues
+ * pour que clair / sombre restent cohérents (éviter bg-cream + text-ink sans variante .dark).
+ */
+:root {
+  color-scheme: light;
+  --surface-rgb: 249 249 247;
+  --foreground-rgb: 26 26 26;
+  --subtle-rgb: 102 102 102;
+}
+
+.dark {
+  color-scheme: dark;
+  --surface-rgb: 8 8 8;
+  --foreground-rgb: 244 244 240;
+  --subtle-rgb: 163 163 163;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth antialiased;
+  }
+
+  body {
+    @apply bg-surface text-foreground font-sans selection:bg-gold selection:text-white;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-surface;
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    @apply bg-ink/90;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-pill bg-gold/80;
+  }
+
+  [class*='rounded'] {
+    border-radius: 0 !important;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
