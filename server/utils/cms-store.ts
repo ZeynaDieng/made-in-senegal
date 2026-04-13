@@ -1,3 +1,4 @@
+import { createError } from 'h3'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import type {
@@ -18,6 +19,40 @@ import type {
 } from '../../types/cms'
 import { uniqueCategoryId } from '../../utils/category-slug'
 import { defaultCms } from './default-cms'
+import { getSharedNeonClient } from './neon-client-cache'
+
+const WAXTU_CMS_META_KEY = 'waxtu_cms'
+
+function isMissingWaxtuMetaTableError(e: unknown): boolean {
+  const msg = e instanceof Error ? e.message : String(e)
+  return /does not exist|relation .+ waxtu_meta/i.test(msg)
+}
+
+function isCmsFilesystemReadonlyError(e: unknown): boolean {
+  const code = (e as NodeJS.ErrnoException)?.code
+  return code === 'EROFS' || code === 'EACCES' || code === 'EPERM'
+}
+
+async function readCmsFromNeon(): Promise<WaxtuCms | null> {
+  const sql = getSharedNeonClient()
+  if (!sql) return null
+  try {
+    const rows = await sql`
+      SELECT value FROM waxtu_meta WHERE key = ${WAXTU_CMS_META_KEY} LIMIT 1
+    `
+    if (!rows?.length) return normalizeCms(structuredClone(defaultCms))
+    const raw = (rows[0] as { value?: unknown }).value
+    if (raw == null) return normalizeCms(structuredClone(defaultCms))
+    const parsed: WaxtuCms =
+      typeof raw === 'string' ? (JSON.parse(raw) as WaxtuCms) : (raw as WaxtuCms)
+    return normalizeCms(parsed)
+  }
+  catch (e) {
+    if (isMissingWaxtuMetaTableError(e)) return null
+    console.error('[waxtu] readCms neon', e)
+    return null
+  }
+}
 
 function mergeCategories(patch: CmsCategory[] | undefined): CmsCategory[] {
   const base = structuredClone(defaultCms.categories)
@@ -376,6 +411,9 @@ export function normalizeCms(cms: WaxtuCms): WaxtuCms {
 }
 
 export async function readCms(): Promise<WaxtuCms> {
+  const fromNeon = await readCmsFromNeon()
+  if (fromNeon) return fromNeon
+
   const path = filePath()
   try {
     const raw = await readFile(path, 'utf-8')
@@ -387,9 +425,47 @@ export async function readCms(): Promise<WaxtuCms> {
 }
 
 export async function writeCms(payload: WaxtuCms) {
+  const sql = getSharedNeonClient()
+  if (sql) {
+    const normalized = normalizeCms(payload)
+    const json = JSON.stringify(normalized)
+    try {
+      await sql`
+        INSERT INTO waxtu_meta (key, value, updated_at)
+        VALUES (${WAXTU_CMS_META_KEY}, ${json}::jsonb, now())
+        ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()
+      `
+      return
+    }
+    catch (e) {
+      console.error('[waxtu] writeCms neon', e)
+      if (isMissingWaxtuMetaTableError(e)) {
+        throw createError({
+          statusCode: 503,
+          statusMessage:
+            'Table waxtu_meta absente : exécutez server/db/sql/000_neon_vercel_bootstrap.sql (ou 001_waxtu_meta.sql) dans Neon.',
+        })
+      }
+      throw createError({ statusCode: 500, statusMessage: 'Enregistrement CMS impossible.' })
+    }
+  }
+
   const path = filePath()
-  await ensureDir(path)
-  await writeFile(path, JSON.stringify(payload, null, 2), 'utf-8')
+  try {
+    await ensureDir(path)
+    await writeFile(path, JSON.stringify(normalizeCms(payload), null, 2), 'utf-8')
+  }
+  catch (e) {
+    console.error('[waxtu] writeCms file', e)
+    if (isCmsFilesystemReadonlyError(e) || process.env.VERCEL) {
+      throw createError({
+        statusCode: 503,
+        statusMessage:
+          'Impossible d’écrire le CMS sur le disque. Connectez Neon (DATABASE_URL) et exécutez server/db/sql/000_neon_vercel_bootstrap.sql.',
+      })
+    }
+    throw createError({ statusCode: 500, statusMessage: 'Enregistrement CMS impossible.' })
+  }
 }
 
 export function mergeWithDefaults(payload: WaxtuCms): WaxtuCms {
