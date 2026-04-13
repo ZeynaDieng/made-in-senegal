@@ -1,3 +1,5 @@
+import { defaultPublicSiteUrlFromEnv } from '../../utils/public-site-url-default'
+
 /**
  * En production, refuse de démarrer si la configuration minimale e-commerce / admin est absente.
  */
@@ -7,9 +9,12 @@ export default defineNitroPlugin(() => {
   const config = useRuntimeConfig()
   const issues: string[] = []
 
-  const site = String(config.public?.siteUrl || '').trim()
+  const configured = String(config.public?.siteUrl || '').trim()
+  const site = configured.startsWith('https://') ? configured : defaultPublicSiteUrlFromEnv()
   if (!site.startsWith('https://')) {
-    issues.push('NUXT_PUBLIC_SITE_URL doit être une URL HTTPS en production')
+    issues.push(
+      'NUXT_PUBLIC_SITE_URL doit être une URL HTTPS en production (ou déployer sur Vercel avec VERCEL_URL / VERCEL_PROJECT_PRODUCTION_URL)',
+    )
   }
 
   if (!String(config.paytechApiKey || '').trim() || !String(config.paytechApiSecret || '').trim()) {

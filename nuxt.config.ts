@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { defaultPublicSiteUrlFromEnv } from './utils/public-site-url-default'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   /** Racine du code Vue : `pages/`, `layouts/`, etc. à la racine du projet (pas seulement sous `app/`). */
@@ -60,7 +62,8 @@ export default defineNuxtConfig({
     /** Destinataire interne (boutique) pour chaque paiement confirmé */
     mailToShop: '',
     public: {
-      siteUrl: 'http://localhost:3000',
+      /** En prod Vercel, dérivé de VERCEL_* si NUXT_PUBLIC_SITE_URL absent. */
+      siteUrl: defaultPublicSiteUrlFromEnv(),
     },
   },
   vite: {
