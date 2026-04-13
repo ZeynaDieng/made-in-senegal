@@ -61,6 +61,11 @@ export default defineNuxtConfig({
     mailFrom: '',
     /** Destinataire interne (boutique) pour chaque paiement confirmé */
     mailToShop: '',
+    /**
+     * Postgres (ex. Neon) — `NUXT_DATABASE_URL` ou `DATABASE_URL` (Vercel + Neon).
+     * Vide : le CMS / commandes restent sur les fichiers `.data/*.json`.
+     */
+    databaseUrl: '',
     public: {
       /** En prod Vercel, dérivé de VERCEL_* si NUXT_PUBLIC_SITE_URL absent. */
       siteUrl: defaultPublicSiteUrlFromEnv(),
