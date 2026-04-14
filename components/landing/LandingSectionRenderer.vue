@@ -104,7 +104,7 @@ function sectionProps(section: LandingSection) {
                   {{ p.category }}
                 </p>
                 <div class="mt-1.5 sm:mt-2">
-                  <ProductPriceTag :product="p" compact :site-promotions="props.cms.promotions" />
+                  <ProductPriceTag :product="p" compact />
                 </div>
               </button>
             </article>

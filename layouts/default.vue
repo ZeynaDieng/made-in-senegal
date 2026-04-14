@@ -18,7 +18,7 @@ watch(
 
 <template>
   <div class="min-h-screen bg-surface text-foreground">
-    <LayoutAppCartDrawer :site-promotions="cms?.promotions ?? null" />
+    <LayoutAppCartDrawer />
     <div
       v-if="cart.notification"
       class="fixed bottom-20 left-1/2 z-[110] flex -translate-x-1/2 items-center gap-3 bg-ink px-4 py-3 text-white shadow-lift animate-reveal-right md:bottom-auto md:left-auto md:right-8 md:top-24 md:translate-x-0 md:gap-4 md:px-6 md:py-4"

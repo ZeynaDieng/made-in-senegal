@@ -101,7 +101,7 @@ function genreLabel(v: string) {
               {{ genreLabel(product.genre) }}
             </NuxtLink>
           </div>
-          <ProductPriceTag :product="product" compact :site-promotions="sitePromotions" />
+          <ProductPriceTag :product="product" compact />
         </article>
       </div>
     </div>

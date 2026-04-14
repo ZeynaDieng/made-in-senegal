@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { ShoppingBag, Trash2, X } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
-import type { CmsPromotions } from '../../types/cms'
 import { useCartStore } from '../../stores/cart'
-
-defineProps<{
-  sitePromotions?: CmsPromotions | null
-}>()
 
 const cart = useCartStore()
 const cmsImg = useCmsImg()
@@ -117,7 +112,7 @@ function onCartTouchEnd(e?: Event) {
             </div>
             <div class="flex-1 py-2">
               <h4 class="font-serif text-lg text-ink dark:text-paper">{{ line.product.name }}</h4>
-              <ProductPriceTag class="mb-4" :product="line.product" compact :site-promotions="sitePromotions" />
+              <ProductPriceTag class="mb-4" :product="line.product" compact />
               <div class="flex items-center gap-4">
                 <div class="flex items-center border border-ink/10 dark:border-white/10">
                   <button

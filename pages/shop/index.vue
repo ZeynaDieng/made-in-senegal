@@ -559,7 +559,7 @@ useSeoMeta({
                 Nouveau
               </p>
             </div>
-            <ProductPriceTag :product="product" compact :site-promotions="cms.promotions" />
+            <ProductPriceTag :product="product" compact />
           </div>
         </article>
       </div>

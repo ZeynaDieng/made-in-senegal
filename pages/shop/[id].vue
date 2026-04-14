@@ -234,10 +234,7 @@ async function toggleFavorite() {
             <h2 class="mb-4 font-serif text-3xl leading-tight text-ink dark:text-paper sm:text-4xl md:text-6xl lg:text-7xl">
               {{ product.name }}
             </h2>
-            <ProductPriceTag :product="product" :site-promotions="cms?.promotions" />
-            <p class="text-xs uppercase tracking-[0.28em] text-muted">
-              {{ pp?.inStock }} {{ pp?.stockSeparator }} {{ product.stock }}
-            </p>
+            <ProductPriceTag :product="product" />
           </div>
           <p class="text-base italic leading-relaxed text-muted md:text-lg lg:text-xl">
              {{ product.tagline }} 
@@ -398,7 +395,7 @@ async function toggleFavorite() {
               {{ p.category }} · {{ genreLabel(p.genre) }}
             </p>
             <div class="mb-2 flex justify-center">
-              <ProductPriceTag :product="p" compact :site-promotions="cms?.promotions" />
+              <ProductPriceTag :product="p" compact />
             </div>
             <span class="text-[10px] font-bold uppercase tracking-[0.35em] text-gold">{{ pp?.crossSellCta }}</span>
           </button>

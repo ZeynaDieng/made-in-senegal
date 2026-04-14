@@ -138,7 +138,7 @@ function closePaytechSheet() {
               <p class="text-xs text-muted">Quantité · {{ line.qty }}</p>
             </div>
             <div class="min-w-0 text-right">
-              <ProductPriceTag :product="line.product" compact :site-promotions="cms?.promotions" />
+              <ProductPriceTag :product="line.product" compact />
               <template v-if="line.qty > 1">
                 <p class="mt-1 text-xs text-muted">
                   × {{ line.qty }}
