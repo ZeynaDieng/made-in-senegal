@@ -74,21 +74,29 @@ export async function sendOrderPaidNotification(order: WaxtuStoredOrder): Promis
   </table>
   `.trim()
 
-  const to: string[] = [toShop]
-  if (customerEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
-    to.push(customerEmail)
-  }
-
-  const res = await postResendEmails(apiKey, {
+  const shopPayload = {
     from,
-    to,
+    to: [toShop],
     subject,
     html,
-  })
+  } as const
+  const shopRes = await postResendEmails(apiKey, shopPayload)
+  if (!shopRes.ok) {
+    const txt = await shopRes.text().catch(() => '')
+    throw new Error(`Resend HTTP ${shopRes.status} (shop): ${txt.slice(0, 400)}`)
+  }
 
-  if (!res.ok) {
-    const txt = await res.text().catch(() => '')
-    throw new Error(`Resend HTTP ${res.status}: ${txt.slice(0, 400)}`)
+  if (customerEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+    const customerRes = await postResendEmails(apiKey, {
+      from,
+      to: [customerEmail],
+      subject: `[WAXTU] Confirmation de paiement — ${order.ref}`,
+      html,
+    })
+    if (!customerRes.ok) {
+      const txt = await customerRes.text().catch(() => '')
+      console.error(`[waxtu][mail] envoi client refusé (${customerRes.status})`, txt.slice(0, 400))
+    }
   }
 }
 
