@@ -5,7 +5,6 @@ import { resolveMediaUrl } from '../../utils/cms-media'
 const route = useRoute()
 const { data: cms } = await usePublicCms()
 const cart = useCartStore()
-const formatPrice = useFormatPrice()
 
 const idNum = Number(route.params.id)
 
@@ -164,7 +163,7 @@ async function toggleFavorite() {
 </script>
 
 <template>
-  <div v-if="product" class="pb-[max(7rem,env(safe-area-inset-bottom))] pt-20 md:pb-16 md:pt-28">
+  <div v-if="product" class="pb-[max(4rem,env(safe-area-inset-bottom))] pt-20 md:pb-16 md:pt-28">
     <section class="mx-auto max-w-6xl px-5 md:px-8">
       <div class="mb-16 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-20">
         <div class="space-y-4">
@@ -406,25 +405,5 @@ async function toggleFavorite() {
         </div>
       </div>
     </section>
-
-    <div class="fixed inset-x-0 bottom-0 z-[95] border-t border-ink/10 bg-paper/95 px-4 py-3 backdrop-blur md:hidden dark:border-white/10 dark:bg-night/95">
-      <div class="mx-auto flex max-w-6xl items-center gap-3">
-        <div class="min-w-0 flex-1">
-          <p class="truncate text-[10px] uppercase tracking-[0.2em] text-muted">
-            {{ product.name }}
-          </p>
-          <p class="text-sm font-semibold text-ink dark:text-paper">
-            {{ formatPrice(product.price) }}
-          </p>
-        </div>
-        <button
-          type="button"
-          class="border border-ink/20 bg-ink px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white dark:border-white/20 dark:bg-paper dark:text-ink"
-          @click="cart.add(product)"
-        >
-          {{ pp?.addToCart }}
-        </button>
-      </div>
-    </div>
   </div>
 </template>

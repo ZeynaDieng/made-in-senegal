@@ -1,3 +1,4 @@
+import { runtimeHttpsOriginForPaytechIpn } from '../../../utils/public-site-url-default'
 import { computeTotals, mergeOrderLines, validateOrderLines, type OrderLine } from '../../utils/commerce'
 import { verifyCustomerJwt } from '../../utils/customer-jwt'
 import { readCustomerTokenFromEvent } from '../../utils/customer-session-cookie'
@@ -88,19 +89,29 @@ export default defineEventHandler(async (event) => {
     : `${siteUrl}${pay.successPath}`
   const cancelUrl = pay.isMobileFlow ? 'https://paytech.sn/mobile/cancel' : `${siteUrl}${pay.cancelPath}`
 
-  const ipnBaseOverride = String(config.paytechIpnPublicUrl || '').trim().replace(/\/$/, '')
-  const ipnBase =
-    /^https:\/\//i.test(ipnBaseOverride)
-      ? ipnBaseOverride
-      : siteUrl
-  const ipnCandidate = `${ipnBase}${pay.ipnPath}`
+  const ipnPath = pay.ipnPath.startsWith('/') ? pay.ipnPath : `/${pay.ipnPath}`
+  const ipnBase = runtimeHttpsOriginForPaytechIpn(
+    String(config.paytechIpnPublicUrl || ''),
+    String(config.public.siteUrl || ''),
+  )
+  const ipnCandidate = ipnBase ? `${ipnBase.replace(/\/$/, '')}${ipnPath}` : ''
   const ipnUrl = /^https:\/\//i.test(ipnCandidate) ? ipnCandidate : undefined
-  if (!ipnUrl && !warnedIpnMissingHttps) {
-    warnedIpnMissingHttps = true
-    console.warn(
-      '[waxtu][paytech] IPN non envoyé (HTTPS requis). Options : '
-        + 'NUXT_PUBLIC_SITE_URL en https, ou NUXT_PAYTECH_IPN_PUBLIC_URL=https://… (tunnel ngrok/cloudflared vers ce serveur).',
-    )
+
+  if (!ipnUrl) {
+    if (!warnedIpnMissingHttps) {
+      warnedIpnMissingHttps = true
+      console.warn(
+        '[waxtu][paytech] Impossible de dériver une URL d’IPN en HTTPS. '
+          + 'Définissez NUXT_PUBLIC_SITE_URL=https://… ou NUXT_PAYTECH_IPN_PUBLIC_URL=https://… '
+          + '(local + http : tunnel ngrok vers ce serveur).',
+      )
+    }
+    throw createError({
+      statusCode: 503,
+      statusMessage:
+        'URL d’IPN PayTech introuvable en HTTPS. En production : NUXT_PUBLIC_SITE_URL (https) ou NUXT_PAYTECH_IPN_PUBLIC_URL. '
+        + 'En local avec http://localhost : NUXT_PAYTECH_IPN_PUBLIC_URL=https://… (tunnel ngrok / cloudflared).',
+    })
   }
 
   try {
