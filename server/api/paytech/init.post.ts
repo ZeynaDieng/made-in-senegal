@@ -126,6 +126,6 @@ export default defineEventHandler(async (event) => {
   }
   catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'PayTech error'
-    throw createError({ statusCode: 502, message })
+    throw createError({ statusCode: 502, statusMessage: message })
   }
 })

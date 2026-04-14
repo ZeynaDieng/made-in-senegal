@@ -102,7 +102,7 @@ export async function requestPaytechPayment(input: PaytechInitInput, apiKey: str
   if (!res.ok) {
     const message = paytechFailureMessage(response, `PayTech request-payment HTTP ${res.status}`)
     console.error('[waxtu][paytech] request-payment HTTP erreur', res.status, rawText.slice(0, 500))
-    throw createError({ statusCode: 502, message })
+    throw createError({ statusCode: 502, statusMessage: message })
   }
 
   if (Object.keys(response).length === 0 && rawText.trim()) {
@@ -117,14 +117,14 @@ export async function requestPaytechPayment(input: PaytechInitInput, apiKey: str
     console.error('[waxtu][paytech] corps vide', res.status)
     throw createError({
       statusCode: 502,
-      message: 'PayTech a renvoyé un corps vide (vérifiez les clés API et l’environnement test/prod).',
+      statusMessage: 'PayTech a renvoyé un corps vide (vérifiez les clés API et l’environnement test/prod).',
     })
   }
 
   if (response.success !== undefined && !paytechIndicatesSuccess(response)) {
     const message = paytechFailureMessage(response, 'PayTech a refusé la demande de paiement.')
     console.error('[waxtu][paytech] success≠1', response)
-    throw createError({ statusCode: 502, message })
+    throw createError({ statusCode: 502, statusMessage: message })
   }
 
   const session = resolvePaytechSession(response)
@@ -135,7 +135,7 @@ export async function requestPaytechPayment(input: PaytechInitInput, apiKey: str
       keys ? `Réponse sans token ni redirect_url (champs : ${keys})` : 'Réponse inattendue',
     )
     console.error('[waxtu][paytech] réponse sans session', keys || '(aucun champ)', rawText.slice(0, 400))
-    throw createError({ statusCode: 502, message })
+    throw createError({ statusCode: 502, statusMessage: message })
   }
 
   return session

@@ -403,6 +403,10 @@ export function normalizeCms(cms: WaxtuCms): WaxtuCms {
         )
   return {
     ...cms,
+    version: 1,
+    global: { ...defaultCms.global, ...(cms.global ?? {}) },
+    promotions: { ...defaultCms.promotions, ...(cms.promotions ?? {}) },
+    paytech: { ...defaultCms.paytech, ...(cms.paytech ?? {}) },
     categories,
     site: mergeSite(cms.site),
     products: (cms.products ?? []).map((p) => normalizeProduct(p, categories)),
