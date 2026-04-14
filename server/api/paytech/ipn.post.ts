@@ -1,6 +1,6 @@
 import { appendFile, mkdir, readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { setResponseStatus } from 'h3'
+import { readRawBody, setResponseStatus, type H3Event } from 'h3'
 import type { WaxtuOrderLine, WaxtuStoredOrder } from '../../../types/orders'
 import { computeTotals, mergeOrderLines, validateOrderLines, type OrderLine } from '../../utils/commerce'
 import { readCms, writeCms } from '../../utils/cms-store'
@@ -38,6 +38,22 @@ function parsePayload(raw: unknown): Record<string, unknown> {
   return {}
 }
 
+/** Lit l’IPN une seule fois (évite « Body has already been read » si readBody échoue après consommation du flux). */
+async function readPaytechIpnBody(event: H3Event): Promise<unknown> {
+  const text = String((await readRawBody(event, 'utf8').catch(() => '')) ?? '').trim()
+  if (!text) return {}
+  const t0 = text[0]
+  if (t0 === '{' || t0 === '[') {
+    try {
+      return JSON.parse(text) as unknown
+    }
+    catch {
+      return {}
+    }
+  }
+  return Object.fromEntries(new URLSearchParams(text).entries())
+}
+
 /**
  * Indique si l’IPN PayTech correspond à un paiement réussi.
  * @see https://docs.intech.sn/doc_paytech.php
@@ -51,18 +67,7 @@ function isSuccessfulPayment(payload: Record<string, unknown>): boolean {
 }
 
 export default defineEventHandler(async (event) => {
-  let raw: unknown
-  try {
-    raw = await readBody(event)
-  }
-  catch {
-    const text = await readRawBody(event, 'utf8').catch(() => '')
-    if (text) {
-      const params = new URLSearchParams(text)
-      raw = Object.fromEntries(params.entries())
-    }
-  }
-
+  const raw = await readPaytechIpnBody(event)
   const payload = parsePayload(raw)
   console.info('[waxtu][paytech][ipn]', payload)
 

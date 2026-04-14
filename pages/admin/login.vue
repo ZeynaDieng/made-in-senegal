@@ -46,14 +46,14 @@ definePageMeta({ layout: false })
       <div>
         <p class="text-xs font-bold uppercase tracking-[0.35em] text-gold">Espace réservé</p>
         <h1 class="mt-3 font-serif text-3xl">Administration WAXTU</h1>
-        <p class="mt-2 text-sm text-white/60">
+        <!-- <p class="mt-2 text-sm text-white/60">
           Identifiants définis côté serveur :
           <code class="text-gold">NUXT_ADMIN_EMAIL</code>,
           <code class="text-gold">NUXT_ADMIN_PASSWORD</code>
           et un secret de session
           <code class="text-gold">NUXT_ADMIN_SESSION_SECRET</code>
           (ou <code class="text-gold">NUXT_ADMIN_TOKEN</code> comme secret de secours).
-        </p>
+        </p> -->
       </div>
       <label class="block space-y-2 text-xs uppercase tracking-[0.28em] text-white/60">
         Email
