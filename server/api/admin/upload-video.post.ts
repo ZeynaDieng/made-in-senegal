@@ -1,8 +1,7 @@
-import { mkdir, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import { randomUUID } from 'node:crypto'
 import { createError, readMultipartFormData } from 'h3'
 import { requireAdmin } from '../../utils/admin-auth'
+import { saveAdminUploadToPublic } from '../../utils/admin-upload-storage'
 
 /** Limite serveur (ajustez l’hébergement si besoin). */
 const MAX_BYTES = 80 * 1024 * 1024 // 80 Mo
@@ -60,11 +59,16 @@ export default defineEventHandler(async (event) => {
   }
 
   const name = `video-${randomUUID().replace(/-/g, '')}${ext}`
-  const dir = join(process.cwd(), 'public', 'uploads', 'waxtu')
-  await mkdir(dir, { recursive: true })
-  const abs = join(dir, name)
-  await writeFile(abs, file.data)
-
-  const url = `/uploads/waxtu/${name}`
+  const localPath = `/uploads/waxtu/${name}`
+  const rawMime = (file.type || 'video/mp4').split(';')[0].trim() || 'video/mp4'
+  const { url } = await saveAdminUploadToPublic({
+    storageFileName: name,
+    data: file.data,
+    localPublicPath: localPath,
+    contentType: rawMime,
+    blobToken: String(config.blobReadWriteToken || '').trim(),
+    /** Grosses vidéos : upload fragmenté côté Blob. */
+    multipart: file.data.length > 8 * 1024 * 1024,
+  })
   return { url }
 })

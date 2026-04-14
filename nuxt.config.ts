@@ -66,6 +66,8 @@ export default defineNuxtConfig({
      * Vide : le CMS / commandes restent sur les fichiers `.data/*.json`.
      */
     databaseUrl: '',
+    /** Vercel Blob (upload admin images/vidéos en prod). Sur Vercel, `BLOB_READ_WRITE_TOKEN` est aussi injecté automatiquement si le store est lié. */
+    blobReadWriteToken: '',
     public: {
       /** En prod Vercel, dérivé de VERCEL_* si NUXT_PUBLIC_SITE_URL absent. */
       siteUrl: defaultPublicSiteUrlFromEnv(),

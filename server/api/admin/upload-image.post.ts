@@ -1,8 +1,7 @@
-import { mkdir, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import { randomUUID } from 'node:crypto'
 import { createError, readMultipartFormData } from 'h3'
 import { requireAdmin } from '../../utils/admin-auth'
+import { saveAdminUploadToPublic } from '../../utils/admin-upload-storage'
 
 const MAX_BYTES = 6 * 1024 * 1024 // 6 Mo
 
@@ -72,11 +71,14 @@ export default defineEventHandler(async (event) => {
   }
 
   const name = `${randomUUID().replace(/-/g, '')}${ext}`
-  const dir = join(process.cwd(), 'public', 'uploads', 'waxtu')
-  await mkdir(dir, { recursive: true })
-  const abs = join(dir, name)
-  await writeFile(abs, file.data)
-
-  const url = `/uploads/waxtu/${name}`
+  const localPath = `/uploads/waxtu/${name}`
+  const rawMime = (file.type || 'application/octet-stream').split(';')[0].trim() || 'application/octet-stream'
+  const { url } = await saveAdminUploadToPublic({
+    storageFileName: name,
+    data: file.data,
+    localPublicPath: localPath,
+    contentType: rawMime,
+    blobToken: String(config.blobReadWriteToken || '').trim(),
+  })
   return { url }
 })
