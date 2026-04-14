@@ -24,7 +24,7 @@ export const defaultSite: CmsSite = {
     phonePlaceholder: '+221 …',
     payTitle: 'Paiement sécurisé',
     payBody:
-      'Vous serez redirigé vers notre partenaire de paiement (Orange Money, Wave, cartes bancaires, etc.). Aucune donnée bancaire complète n’est stockée sur ce site.',
+      'Le paiement s’ouvre dans un encart sur cette page (sur mobile, comme le panier qui remonte du bas). Orange Money, Wave, cartes bancaires, etc. Aucune donnée bancaire complète n’est stockée sur ce site.',
     payButton: 'Payer en ligne',
   },
   redirect: {

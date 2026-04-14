@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { CreditCard, Loader2 } from 'lucide-vue-next'
+import CheckoutPaytechSheet from '../components/checkout/CheckoutPaytechSheet.vue'
 
 const { data: cms } = await usePublicCms()
 const cmsImg = useCmsImg()
@@ -21,6 +22,10 @@ const discount = computed(() => {
 const total = computed(() => Math.max(0, cart.subtotal - discount.value))
 
 const co = computed(() => cms.value?.site.checkout)
+const rd = computed(() => cms.value?.site.redirect)
+
+/** Paiement PayTech dans un panneau type panier (mobile : depuis le bas). */
+const paytechEmbed = ref<{ url: string } | null>(null)
 
 function paytechRedirectUrl(res: { redirectUrl?: string; redirect_url?: string }): string {
   const u = res.redirectUrl ?? res.redirect_url
@@ -65,7 +70,8 @@ async function payWithPaytech() {
     }
     sessionStorage.setItem('waxtu-last-order-ref', refCommand)
     sessionStorage.setItem('waxtu-last-order-total', String(total.value))
-    window.location.assign(payUrl)
+    cart.close()
+    paytechEmbed.value = { url: payUrl }
   }
   catch (e: unknown) {
     const err = e as {
@@ -99,9 +105,21 @@ onMounted(async () => {
 useHead(() => ({
   title: co.value?.pageTitle ? `${co.value.pageTitle} — WAXTU` : 'Paiement — WAXTU',
 }))
+
+function closePaytechSheet() {
+  paytechEmbed.value = null
+}
 </script>
 
 <template>
+  <CheckoutPaytechSheet
+    :open="!!paytechEmbed"
+    :url="paytechEmbed?.url ?? null"
+    :title="co?.payTitle ?? 'Paiement sécurisé'"
+    :hint="rd?.subtitle ?? 'Finalisez le paiement dans le cadre ci-dessous.'"
+    :full-page-label="rd?.manualLink ?? 'Ouvrir PayTech en plein navigateur'"
+    @close="closePaytechSheet"
+  />
   <section class="pb-[max(4rem,env(safe-area-inset-bottom))] pt-20 md:pb-24 md:pt-28">
     <div class="mx-auto max-w-4xl px-5 md:px-8">
       <h1 class="mb-6 font-serif text-3xl text-ink dark:text-paper sm:text-4xl md:mb-8 md:text-5xl">
