@@ -1,5 +1,4 @@
 import { createError } from 'h3'
-import { ofetch } from 'ofetch'
 
 const PAYMENT_URL = 'https://paytech.sn/api/payment/request-payment'
 const CHECKOUT_BASE = 'https://paytech.sn/payment/checkout/'
@@ -85,7 +84,8 @@ export async function requestPaytechPayment(input: PaytechInitInput, apiKey: str
     payload.ipn_url = ipn
   }
 
-  const res = await ofetch.raw(PAYMENT_URL, {
+  /** `fetch` natif : `ofetch.raw` + `res.text()` lisait le corps deux fois si PayTech renvoie du JSON (ofetch parse en interne). */
+  const res = await fetch(PAYMENT_URL, {
     method: 'POST',
     body: JSON.stringify(payload),
     headers: {
