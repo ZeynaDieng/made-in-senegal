@@ -22,7 +22,10 @@ const total = computed(() => Math.max(0, cart.subtotal - discount.value))
 
 const co = computed(() => cms.value?.site.checkout)
 
-const PAYTECH_REDIRECT_KEY = 'waxtu-paytech-redirect-url'
+function paytechRedirectUrl(res: { redirectUrl?: string; redirect_url?: string }): string {
+  const u = res.redirectUrl ?? res.redirect_url
+  return typeof u === 'string' ? u.trim() : ''
+}
 
 async function payWithPaytech() {
   error.value = null
@@ -40,7 +43,7 @@ async function payWithPaytech() {
   try {
     const refCommand = `WAXTU-${Date.now()}`
     const commandName = cart.lines.map((l) => `${l.product.name} x${l.qty}`).join(', ')
-    const res = await $fetch<{ redirectUrl: string }>('/api/paytech/init', {
+    const res = await $fetch<{ redirectUrl?: string; redirect_url?: string }>('/api/paytech/init', {
       method: 'POST',
       credentials: 'include',
       body: {
@@ -54,12 +57,15 @@ async function payWithPaytech() {
         },
       },
     })
-    if (import.meta.client) {
-      sessionStorage.setItem('waxtu-last-order-ref', refCommand)
-      sessionStorage.setItem('waxtu-last-order-total', String(total.value))
-      sessionStorage.setItem(PAYTECH_REDIRECT_KEY, res.redirectUrl)
-      await navigateTo('/checkout/paiement')
+    if (!import.meta.client) return
+    const payUrl = paytechRedirectUrl(res)
+    if (!/^https:\/\//i.test(payUrl)) {
+      error.value = 'Lien de paiement invalide ou manquant. Réessayez ou contactez la boutique.'
+      return
     }
+    sessionStorage.setItem('waxtu-last-order-ref', refCommand)
+    sessionStorage.setItem('waxtu-last-order-total', String(total.value))
+    window.location.assign(payUrl)
   }
   catch (e: unknown) {
     const err = e as {

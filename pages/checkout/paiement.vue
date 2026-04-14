@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Loader2 } from 'lucide-vue-next'
 
-const { data: cms } = await usePublicCms()
+/** Sans `await` : sinon le montage attend le CMS et `onMounted` (redirection PayTech) ne tourne pas. */
+const { data: cms } = usePublicCms()
 const rd = computed(() => cms.value?.site.redirect)
 
 const PAYTECH_REDIRECT_KEY = 'waxtu-paytech-redirect-url'
