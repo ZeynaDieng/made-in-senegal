@@ -9,9 +9,9 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@nuxtjs/color-mode', '@vueuse/nuxt'],
   colorMode: {
     classSuffix: '',
-    /** Défaut clair (maquette) ; l’utilisateur peut basculer (nav) ou suivre l’OS en changeant la préférence. */
-    preference: 'light',
-    fallback: 'light',
+    /** Dark par défaut sur tout le site ; l’utilisateur peut basculer via la nav. */
+    preference: 'dark',
+    fallback: 'dark',
     storageKey: 'waxtu-color-mode',
   },
   css: ['./app/assets/css/main.css'],

@@ -76,7 +76,8 @@ export function useHeroParallax(
   })
 
   const layerStyle = computed(() => {
-    if (import.meta.server || prefersReducedMotion()) return {}
+    // Rendre le même style en SSR et côté client pour éviter les mismatches d’hydratation.
+    if (prefersReducedMotion()) return {}
     return { transform: `translate3d(0, ${offsetPx.value}px, 0)` }
   })
 

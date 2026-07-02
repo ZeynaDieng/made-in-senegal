@@ -29,6 +29,23 @@
     @apply bg-surface text-foreground font-sans selection:bg-gold selection:text-white;
   }
 
+  html,
+  body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  #__nuxt {
+    overflow-x: clip;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+  }
+
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
