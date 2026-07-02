@@ -11,7 +11,7 @@ const imageFirst = computed(() => props.section.layout === 'imageLeft')
 </script>
 
 <template>
-  <section class="bg-cream py-16 text-ink dark:bg-night dark:text-paper md:py-24">
+  <section class="bg-night py-16 text-paper md:py-24">
     <div class="mx-auto max-w-6xl px-5 md:px-8">
       <div
         class="grid grid-cols-1 items-center gap-12 lg:gap-20"
@@ -36,7 +36,7 @@ const imageFirst = computed(() => props.section.layout === 'imageLeft')
           <span class="text-sm font-bold uppercase italic tracking-[0.28em] text-gold">
             {{ section.eyebrow }}
           </span>
-          <h3 class="font-serif text-3xl leading-tight text-ink dark:text-paper sm:text-4xl md:text-5xl lg:text-6xl">
+          <h3 class="font-serif text-3xl leading-tight text-paper sm:text-4xl md:text-5xl lg:text-6xl">
             {{ section.title }}
           </h3>
           <p class="text-base font-light leading-relaxed text-muted md:text-lg">
@@ -51,11 +51,11 @@ const imageFirst = computed(() => props.section.layout === 'imageLeft')
           </div>
           <div v-if="section.link" class="pt-4">
             <NuxtLink
-              class="group inline-flex min-h-[44px] items-center gap-4 py-2 text-xs font-bold uppercase tracking-[0.35em] text-ink dark:text-paper"
+              class="group inline-flex min-h-[44px] items-center gap-4 py-2 text-xs font-bold uppercase tracking-[0.35em] text-paper"
               :to="section.link.href"
             >
               {{ section.link.label }}
-              <span class="h-px w-12 bg-ink transition-all duration-700 group-hover:w-20 dark:bg-paper" />
+              <span class="h-px w-12 bg-paper transition-all duration-700 group-hover:w-20" />
             </NuxtLink>
           </div>
         </div>

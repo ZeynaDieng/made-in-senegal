@@ -25,7 +25,7 @@ const cardClass =
 
 <template>
   <section
-    class="border-y border-ink/10 bg-paper py-7 text-ink dark:border-white/10 dark:bg-night dark:text-paper md:py-12"
+    class="border-y border-white/10 bg-night py-7 text-paper md:py-12"
     aria-label="Nos engagements"
   >
     <div v-if="section.eyebrow || section.title" class="mx-auto max-w-6xl px-4 pb-4 text-center sm:px-5 md:px-8 md:pb-6">

@@ -31,7 +31,7 @@ const resolvedMp4 = computed(() => {
 </script>
 
 <template>
-  <section class="bg-paper py-16 text-ink dark:bg-night dark:text-paper md:py-24">
+  <section class="bg-night py-16 text-paper md:py-24">
     <div class="mx-auto max-w-6xl px-5 md:px-8">
       <div class="mb-10 max-w-2xl md:mb-14">
         <p v-if="section.eyebrow" class="mb-2 text-xs font-bold uppercase tracking-[0.35em] text-gold">

@@ -23,7 +23,7 @@ function tileHref(tile: CmsCategoryShowcaseTile) {
 </script>
 
 <template>
-  <section class="border-y border-ink/10 bg-cream py-12 text-ink dark:border-white/10 dark:bg-ink dark:text-paper md:py-24">
+  <section class="border-y border-white/10 bg-night py-12 text-paper md:py-24">
     <div class="mx-auto max-w-6xl px-5 md:px-8">
       <div class="mb-7 max-w-2xl sm:mb-10 md:mb-14">
         <p v-if="section.eyebrow" class="mb-1.5 text-[10px] font-bold uppercase tracking-[0.3em] text-gold sm:mb-2 sm:text-xs sm:tracking-[0.35em]">

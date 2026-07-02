@@ -56,7 +56,7 @@ function sectionProps(section: LandingSection) {
       <component :is="sectionComponent(section)" v-bind="sectionProps(section)" />
       <section
         v-if="idx === newArrivalsInsertIndex && newestProducts.length"
-        class="bg-paper py-8 dark:bg-night sm:py-10 md:py-20"
+        class="bg-night py-8 sm:py-10 md:py-20"
       >
         <div class="mx-auto max-w-6xl px-5 md:px-8">
           <div class="mb-5 flex flex-col gap-3 sm:mb-10 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
@@ -64,13 +64,13 @@ function sectionProps(section: LandingSection) {
               <p class="text-[10px] font-bold uppercase tracking-[0.28em] text-gold sm:text-xs sm:tracking-[0.3em]">
                 Boutique
               </p>
-              <h3 class="font-serif text-xl text-ink dark:text-paper sm:text-2xl md:text-3xl lg:text-4xl">
+              <h3 class="font-serif text-xl text-paper sm:text-2xl md:text-3xl lg:text-4xl">
                 Nouveautés
               </h3>
             </div>
             <NuxtLink
               to="/shop?new=1&sort=newest"
-              class="inline-flex min-h-[44px] shrink-0 items-center border-b border-ink/25 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-ink transition hover:border-gold hover:text-gold dark:border-white/25 dark:text-paper sm:pb-1"
+              class="inline-flex min-h-[44px] shrink-0 items-center border-b border-white/25 pb-2 text-xs font-bold uppercase tracking-[0.24em] text-paper transition hover:border-gold hover:text-gold sm:pb-1"
             >
               Voir tout
             </NuxtLink>
@@ -84,7 +84,7 @@ function sectionProps(section: LandingSection) {
               v-for="p in newestProducts"
               :key="p.id"
               role="listitem"
-              class="group w-[min(72vw,16.25rem)] shrink-0 snap-start rounded-xl border border-ink/10 bg-paper p-2 shadow-[0_6px_22px_rgba(10,10,10,0.07)] dark:border-white/10 dark:bg-night dark:shadow-[0_6px_22px_rgba(0,0,0,0.3)] sm:w-auto sm:min-w-0 sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none"
+              class="group w-[min(72vw,16.25rem)] shrink-0 snap-start rounded-xl border border-white/10 bg-ink p-2 shadow-[0_6px_22px_rgba(0,0,0,0.3)] sm:w-auto sm:min-w-0 sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none"
             >
               <button type="button" class="w-full text-left" @click="navigateTo(`/shop/${p.id}`)">
                 <div class="mb-2 aspect-square overflow-hidden rounded-lg sm:mb-4 sm:rounded-none">
@@ -97,7 +97,7 @@ function sectionProps(section: LandingSection) {
                 <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-gold sm:text-[10px] sm:tracking-[0.22em]">
                   Nouveau
                 </p>
-                <h4 class="mt-0.5 line-clamp-2 font-serif text-base leading-snug text-ink dark:text-paper sm:mt-1 sm:text-xl sm:leading-normal sm:line-clamp-none">
+                <h4 class="mt-0.5 line-clamp-2 font-serif text-base leading-snug text-paper sm:mt-1 sm:text-xl sm:leading-normal sm:line-clamp-none">
                   {{ p.name }}
                 </h4>
                 <p class="mt-0.5 text-[9px] uppercase tracking-[0.22em] text-muted sm:mt-1 sm:text-[10px] sm:tracking-[0.26em]">
