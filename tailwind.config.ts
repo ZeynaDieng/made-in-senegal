@@ -16,9 +16,11 @@ export default {
       colors: {
         ink: '#0A0A0A',
         gold: '#C5A059',
-        cream: '#F9F9F7',
+        // Dark global: les anciens fonds "cream" doivent suivre les tokens.
+        cream: 'rgb(var(--surface-rgb) / <alpha-value>)',
         night: '#050505',
-        paper: '#FFFFFF',
+        // Dark global: les anciens fonds "paper" (y compris bg-paper/90, /95, etc.) doivent suivre les tokens.
+        paper: 'rgb(var(--surface-rgb) / <alpha-value>)',
         muted: '#666666',
         'gold-soft': '#E6D2A8',
         surface: 'rgb(var(--surface-rgb) / <alpha-value>)',
