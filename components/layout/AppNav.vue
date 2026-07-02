@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CircleUser, Facebook, Instagram, MessageCircle, Moon, ShoppingBag, SunMedium, X } from 'lucide-vue-next'
+import { CircleUser, Facebook, Instagram, MessageCircle, ShoppingBag, X } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { useCartStore } from '../../stores/cart'
 import type { WaxtuCms } from '../../types/cms'
@@ -16,17 +16,12 @@ const fbHref = computed(() => contactBlock.value?.facebookUrl?.trim() ?? '')
 const waHref = computed(() => contactWhatsappHref(contactBlock.value?.phone ?? ''))
 
 const cart = useCartStore()
-const colorMode = useColorMode()
 const isMenuOpen = ref(false)
 /** Évite la fermeture instantanée par « ghost click » iOS/Android après ouverture. */
 const menuBackdropIgnoreCloseUntil = ref(0)
 const MENU_OPEN_CLICK_GUARD_MS = 700
 
 const links = computed(() => siteNavLinks(props.cms))
-
-function toggleColorMode() {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
-}
 
 function openMenu() {
   /** Garde posée avant l’ouverture : évite une fermeture dans la même micro-tâche que le ghost click. */
@@ -81,15 +76,6 @@ function goAccountOrAdmin() {
       </NuxtLink>
 
       <div class="flex items-center gap-4 text-ink dark:text-paper md:gap-6">
-        <button
-          type="button"
-          class="rounded-wax border border-transparent p-2 transition hover:border-ink/10 dark:hover:border-white/10"
-          :aria-label="colorMode.value === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'"
-          @click="toggleColorMode"
-        >
-          <SunMedium v-if="colorMode.value === 'dark'" class="h-5 w-5" />
-          <Moon v-else class="h-5 w-5" />
-        </button>
         <button
           type="button"
           class="rounded-wax border border-transparent p-2 transition hover:border-ink/10 hover:text-gold dark:hover:border-white/10"
