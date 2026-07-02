@@ -74,4 +74,18 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /**
+   * Dark global: force les anciennes classes "clair" à suivre les tokens.
+   * Objectif: aucune zone blanche même si un composant utilise bg-paper/bg-cream/text-ink.
+   */
+  .bg-paper,
+  .bg-cream,
+  .bg-white {
+    background-color: rgb(var(--surface-rgb) / 1) !important;
+  }
+
+  .text-ink {
+    color: rgb(var(--foreground-rgb) / 1) !important;
+  }
 }
