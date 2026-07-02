@@ -7,17 +7,19 @@
  * pour que clair / sombre restent cohérents (éviter bg-cream + text-ink sans variante .dark).
  */
 :root {
-  color-scheme: light;
-  --surface-rgb: 249 249 247;
-  --foreground-rgb: 26 26 26;
-  --subtle-rgb: 102 102 102;
-}
-
-.dark {
+  /* Dark par défaut (site en mode noir partout). */
   color-scheme: dark;
   --surface-rgb: 8 8 8;
   --foreground-rgb: 244 244 240;
   --subtle-rgb: 163 163 163;
+}
+
+/* Mode clair optionnel (si besoin plus tard). */
+.light {
+  color-scheme: light;
+  --surface-rgb: 249 249 247;
+  --foreground-rgb: 26 26 26;
+  --subtle-rgb: 102 102 102;
 }
 
 @layer base {
